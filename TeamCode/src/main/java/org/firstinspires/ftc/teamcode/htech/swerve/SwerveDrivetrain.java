@@ -15,14 +15,14 @@ public class SwerveDrivetrain implements Drivetrain {
     public SwerveModule frontLeftModule, backLeftModule, backRightModule, frontRightModule;
     public SwerveModule[] modules;
 
-    public static double TRACK_WIDTH = 9, WHEEL_BASE = 9;
+    public static double TRACK_WIDTH = 9, //distanta dintre front left si front right
+            WHEEL_BASE = 9; //distanta dintre front left si back left
     private final double R;
     public static double frontLeftOffset = 2, frontRightOffset = 0, backLeftOffset = 0, backRightOffset = -0.055;
     public static boolean maintainHeading = false;
 
     public static double TRANSLATION_SPEED = 1.0;
     public static double ROTATION_SPEED = 0.75;
-    public static double SLOW_MULTIPLIER = 0.45;
     public static double DEADBAND = 0.05;
 
     double[] ws = new double[4];
@@ -109,8 +109,6 @@ public class SwerveDrivetrain implements Drivetrain {
         y *= TRANSLATION_SPEED;
         w *= TRANSLATION_SPEED;
 
-        if (g.y) setLocked(true);
-        if (g.a) setLocked(false);
 
         set(new Pose(x, y, w));
         write();
