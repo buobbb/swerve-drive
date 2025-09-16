@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 @Config
@@ -26,6 +27,10 @@ public class Hardware {
     public static AnalogInput backLeftEncoder;
     public static AnalogInput backRightEncoder;
 
+    public static VoltageSensor vs;
+
+    public static boolean auto = false;
+
     public static void unlock(DcMotorEx motor)
     {
         MotorConfigurationType mct = motor.getMotorType();
@@ -39,6 +44,8 @@ public class Hardware {
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "m1");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "m2");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "m3");
+
+        vs = hardwareMap.voltageSensor.iterator().next();
 
         unlock(frontLeftMotor);
         unlock(frontRightMotor);

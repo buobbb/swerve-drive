@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.htech.swerve;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+import static org.firstinspires.ftc.teamcode.htech.config.Hardware.vs;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -13,8 +14,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.htech.config.Hardware;
 
 import java.util.Locale;
 
@@ -23,6 +27,9 @@ public class SwerveModule {
 
     public static double P = 0.6, I = 0, D = 0.1;
     public static double K_STATIC = 0.03;
+    private double voltage;
+
+    private int vCount = 0;
 
     public static double MAX_SERVO = 1, MAX_MOTOR = 1;
 
@@ -67,6 +74,9 @@ public class SwerveModule {
     }
 
     public void update() {
+
+        if (++vCount >= 10) { voltage = vs.getVoltage(); vCount = 0; }
+
         rotationController.setPIDF(P, I, D, 0);
         double target = getTargetRotation(), current = getModuleRotation();
 
@@ -96,7 +106,9 @@ public class SwerveModule {
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
         lastMotorPower = power;
-        motor.setPower(power);
+        if(Hardware.auto) motor.setPower(power * 12 / voltage);
+        else motor.setPower(power);
+
     }
 
     public void setTargetRotation(double target) {
@@ -162,7 +174,6 @@ public class SwerveModule {
             return this;
         }
 
-        //TODO add averaging for podrots based off of past values
         public Vector2d calculateDelta() {
             double oldWheel = wheelPos;
             update();

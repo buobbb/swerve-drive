@@ -14,6 +14,7 @@ public class SwerveTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        Hardware.auto = false;
         Hardware.init(hardwareMap);
         drive = new SwerveDrivetrain();
 
