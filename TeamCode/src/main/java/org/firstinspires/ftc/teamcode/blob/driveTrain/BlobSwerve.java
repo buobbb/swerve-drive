@@ -17,6 +17,7 @@ public class BlobSwerve {
     public SwerveDrivetrain drive;
     public Odometry odo;
 
+
     public double targetX, targetY, targetHeading;
     public double xCmd, yCmd, wCmd;
     public double realHeading, headingError;
@@ -54,7 +55,9 @@ public class BlobSwerve {
         targetX = x;
         targetY = y;
         targetHeading = headingRad;
+
     }
+
 
     public void turnToDegrees(double deg) {
         targetHeading = Math.toRadians(deg);
