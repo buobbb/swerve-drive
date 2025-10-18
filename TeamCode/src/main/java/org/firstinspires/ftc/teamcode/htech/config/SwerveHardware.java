@@ -9,8 +9,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
+import org.firstinspires.ftc.teamcode.blob.localization.GoBildaPinpointDriver;
+
 @Config
-public class Hardware {
+public class SwerveHardware {
 
     public static DcMotorEx frontLeftMotor;
     public static DcMotorEx frontRightMotor;
@@ -27,6 +31,7 @@ public class Hardware {
     public static AnalogInput backLeftEncoder;
     public static AnalogInput backRightEncoder;
 
+    public static GoBildaPinpointDriver odo;
     public static VoltageSensor vs;
 
     public static boolean auto = false;
@@ -46,6 +51,11 @@ public class Hardware {
         backRightMotor = hardwareMap.get(DcMotorEx.class, "m3");
 
         vs = hardwareMap.voltageSensor.iterator().next();
+        odo = hardwareMap.get(GoBildaPinpointDriver.class, BlobConstants.pinpointName);
+        odo.setEncoderDirections(BlobConstants.xPodDirection, BlobConstants.yPodDirection);
+        odo.setEncoderResolution(BlobConstants.podType);
+        odo.setOffsets(BlobConstants.xOffset, BlobConstants.yOffset, DistanceUnit.INCH);
+        odo.resetPosAndIMU();
 
         unlock(frontLeftMotor);
         unlock(frontRightMotor);
@@ -66,6 +76,7 @@ public class Hardware {
         frontRightEncoder = hardwareMap.get(AnalogInput.class, "e1");
         backLeftEncoder = hardwareMap.get(AnalogInput.class, "e2");
         backRightEncoder = hardwareMap.get(AnalogInput.class, "e3");
+
 
 
 

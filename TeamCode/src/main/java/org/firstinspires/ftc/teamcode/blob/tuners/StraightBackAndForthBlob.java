@@ -6,9 +6,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.blob.driveTrain.Blob;
 import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobSwerve;
-import org.firstinspires.ftc.teamcode.htech.config.Hardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 
 @Config
@@ -34,9 +33,9 @@ public class StraightBackAndForthBlob extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Hardware.init(hardwareMap);
+        SwerveHardware.init(hardwareMap);
         drive = new SwerveDrivetrain();
-        blob = new BlobSwerve(hardwareMap, drive);
+        blob = new BlobSwerve(drive);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();

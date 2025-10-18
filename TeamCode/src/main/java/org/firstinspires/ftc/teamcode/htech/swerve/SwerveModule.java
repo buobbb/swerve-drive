@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.htech.swerve;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
-import static org.firstinspires.ftc.teamcode.htech.config.Hardware.vs;
+import static org.firstinspires.ftc.teamcode.htech.config.SwerveHardware.vs;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -14,11 +14,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.htech.config.Hardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 
 import java.util.Locale;
 
@@ -106,7 +105,7 @@ public class SwerveModule {
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
         lastMotorPower = power;
-        if(Hardware.auto) motor.setPower(power * 12 / voltage);
+        if(SwerveHardware.auto) motor.setPower(power * 12 / voltage);
         else motor.setPower(power);
 
     }

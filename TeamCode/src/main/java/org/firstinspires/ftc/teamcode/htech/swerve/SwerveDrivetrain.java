@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.htech.config.Hardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 import org.firstinspires.ftc.teamcode.htech.utils.Pose;
 
 @Config
@@ -35,10 +35,10 @@ public class SwerveDrivetrain implements Drivetrain {
     private boolean locked = false;
 
     public SwerveDrivetrain() {
-        frontLeftModule  = new SwerveModule(Hardware.frontLeftMotor,  Hardware.frontLeftServo,  new AbsoluteAnalogEncoder(Hardware.frontLeftEncoder,  3.3).zero(frontLeftOffset).setInverted(true));
-        backLeftModule   = new SwerveModule(Hardware.backLeftMotor,   Hardware.backLeftServo,   new AbsoluteAnalogEncoder(Hardware.backLeftEncoder,   3.3).zero(backLeftOffset).setInverted(true));
-        backRightModule  = new SwerveModule(Hardware.backRightMotor,  Hardware.backRightServo,  new AbsoluteAnalogEncoder(Hardware.backRightEncoder,  3.3).zero(backRightOffset).setInverted(true));
-        frontRightModule = new SwerveModule(Hardware.frontRightMotor, Hardware.frontRightServo, new AbsoluteAnalogEncoder(Hardware.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
+        frontLeftModule  = new SwerveModule(SwerveHardware.frontLeftMotor,  SwerveHardware.frontLeftServo,  new AbsoluteAnalogEncoder(SwerveHardware.frontLeftEncoder,  3.3).zero(frontLeftOffset).setInverted(true));
+        backLeftModule   = new SwerveModule(SwerveHardware.backLeftMotor,   SwerveHardware.backLeftServo,   new AbsoluteAnalogEncoder(SwerveHardware.backLeftEncoder,   3.3).zero(backLeftOffset).setInverted(true));
+        backRightModule  = new SwerveModule(SwerveHardware.backRightMotor,  SwerveHardware.backRightServo,  new AbsoluteAnalogEncoder(SwerveHardware.backRightEncoder,  3.3).zero(backRightOffset).setInverted(true));
+        frontRightModule = new SwerveModule(SwerveHardware.frontRightMotor, SwerveHardware.frontRightServo, new AbsoluteAnalogEncoder(SwerveHardware.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
 
         modules = new SwerveModule[]{frontLeftModule, frontRightModule, backRightModule, backLeftModule};
         for (SwerveModule m : modules) m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

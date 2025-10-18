@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.htech.config.Hardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 
 @Config
 @TeleOp
@@ -14,8 +14,8 @@ public class SwerveTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Hardware.auto = false;
-        Hardware.init(hardwareMap);
+        SwerveHardware.auto = false;
+        SwerveHardware.init(hardwareMap);
         drive = new SwerveDrivetrain();
 
         waitForStart();

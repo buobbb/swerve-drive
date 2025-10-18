@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.blob.driveTrain;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.blob.math.PIDControllerBlob;
-import org.firstinspires.ftc.teamcode.htech.config.Hardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 import com.pedropathing.geometry.Pose;
 
@@ -43,11 +42,11 @@ public class BlobSwerve {
     private double prevX, prevY, prevH;
     private double totalDist, travelDist, progress;
 
-    public BlobSwerve(HardwareMap hw, SwerveDrivetrain drivetrain) {
+    public BlobSwerve(SwerveDrivetrain drivetrain) {
         this.drive = drivetrain;
-        this.odo   = new Odometry(hw);
+        this.odo   = new Odometry(SwerveHardware.vs, SwerveHardware.odo);
         setTargetPosition(0,0,0);
-        Hardware.auto = true;
+        SwerveHardware.auto = true;
     }
 
     public void resetPose(double x, double y, double headingRad) {

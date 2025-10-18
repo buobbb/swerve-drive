@@ -15,20 +15,16 @@ import org.firstinspires.ftc.teamcode.blob.math.LowPassFilter;
 @Config
 public class Odometry {
 
-    GoBildaPinpointDriver odo;
-    VoltageSensor vs;
+    public GoBildaPinpointDriver odo;
+    public VoltageSensor vs;
 
     public double x, y, heading, xVelocity, yVelocity, predictedX, predictedY;
     double voltage;
     int i = 10;
 
-    public Odometry(HardwareMap hardwareMap){
-        vs = hardwareMap.voltageSensor.iterator().next();
-        odo = hardwareMap.get(GoBildaPinpointDriver.class, BlobConstants.pinpointName);
-        odo.setEncoderDirections(BlobConstants.xPodDirection, BlobConstants.yPodDirection);
-        odo.setEncoderResolution(BlobConstants.podType);
-        odo.setOffsets(BlobConstants.xOffset, BlobConstants.yOffset, DistanceUnit.INCH);
-        odo.resetPosAndIMU();
+    public Odometry(VoltageSensor vs, GoBildaPinpointDriver odo){
+        this.odo = odo;
+        this.vs = vs;
     }
 
     public void calibrate(){

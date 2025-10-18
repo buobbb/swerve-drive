@@ -19,7 +19,7 @@ public class ShooterMath {
     /*TODO: */ public static double llMountAngle = 0;  //rad, fata de orizontala
 
 
-    public static double distance, pitchAngle, turretAngle;
+    public double distance, pitchAngle, turretAngle;
 
     public void updateDistance(double ty){
         distance = (hTag - hCam) / Math.tan(llMountAngle + ty);
@@ -29,7 +29,7 @@ public class ShooterMath {
         turretAngle = -tx + Math.atan2(llLateralMountError, distance);
     }
 
-    public void updatePitchAngle(double ty){
+    public void updatePitchAngle(){
         pitchAngle = Math.atan(speed * speed - Math.sqrt(speed * speed * speed * speed - g * (g * distance * distance + 2 * (hGoal - hShooter) * speed * speed)) / (g * distance));
     }
 
@@ -42,7 +42,7 @@ public class ShooterMath {
     /*TODO: */ public static double theta_max = Math.toRadians(60); //max pos shooter
 
 
-    public static double angleToServoPos(double radians){
+    public double angleToServoPos(double radians){
 
         radians = MathUtils.clamp(radians, theta_min, theta_max);
         double s_target = s_min + (radians - theta_min) * (s_max - s_min) / (theta_max - theta_min);
@@ -56,14 +56,22 @@ public class ShooterMath {
     /* TODO: */ public static double ticks_zero = 0; //pozitia motorului cand turela e orientata inspre fata robotului
     /* TODO: */ public static int dir = 1; //directia
 
-    public double angleToTicks(double radians){
+    public int angleToTicks(double radians){
 
-        return ticks_zero + dir * (radians / (2 * Math.PI)) * ticks_per_turret_rev;
+        return (int) (ticks_zero + dir * (radians / (2 * Math.PI)) * ticks_per_turret_rev);
 
     }
 
+    public double wrapRadians(double angle) {
+        angle = (angle + Math.PI) % (2 * Math.PI);
+        if (angle < 0)
+            angle += 2 * Math.PI;
+        return angle - Math.PI;
+    }
 
-    
+
+
+
 
 
 

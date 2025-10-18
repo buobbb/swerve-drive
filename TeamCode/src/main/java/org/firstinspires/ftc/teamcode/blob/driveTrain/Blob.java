@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.blob.math.PIDControllerBlob;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 
 @Config
 public class Blob {
@@ -52,8 +53,7 @@ public class Blob {
 
     public Blob(HardwareMap hardwareMap){
 
-        odo = new Odometry(hardwareMap);
-        vs = hardwareMap.voltageSensor.iterator().next();
+        odo = new Odometry(SwerveHardware.vs, SwerveHardware.odo);
 
         leftFront = hardwareMap.get(DcMotorEx.class, BlobConstants.leftFrontName);
         leftBack = hardwareMap.get(DcMotorEx.class, BlobConstants.leftBackName);
@@ -198,7 +198,7 @@ public class Blob {
 
 
         if(i == 10){
-            voltage = vs.getVoltage();
+            voltage = odo.vs.getVoltage();
             i = 0;
         }
 
