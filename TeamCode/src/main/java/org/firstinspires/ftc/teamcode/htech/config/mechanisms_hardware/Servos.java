@@ -6,5 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 public abstract class Servos {
 
     public static String pitchServo = "";
+    public static String indexerServo = "";
 
 }

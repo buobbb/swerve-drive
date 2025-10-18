@@ -7,5 +7,6 @@ public abstract class Motors {
 
     public static String launcherMotor = "";
     public static String turretMotor = "";
+    public static String intakeMotor = "";
 
 }
