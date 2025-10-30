@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/home/bob/StudioProjects/swerve-drive/TeamCode/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/bob/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/bob/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "shootermath::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "shootermath",
+      "output": "/home/bob/StudioProjects/swerve-drive/TeamCode/build/intermediates/cxx/Debug/2h2q3uxi/obj/armeabi-v7a/libshootermath.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/bob/Android/Sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/bob/Android/Sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

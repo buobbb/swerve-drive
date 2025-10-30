@@ -1,0 +1,3 @@
+/home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a/CMakeFiles/shootermath.dir
+/home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a/CMakeFiles/rebuild_cache.dir

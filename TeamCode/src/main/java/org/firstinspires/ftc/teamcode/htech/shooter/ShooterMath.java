@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.htech.swerve.MathUtils;
 public class ShooterMath {
 
     public static double hGoal = 0.985;
-    public static double hTag = 0.75;   //test push
+    public static double hTag = 0.75;
     /*TODO: */ public static double hCam = 0;
     public static double hShooter = 0.338;
     /*TODO: */ public static double llLateralMountError = 0;

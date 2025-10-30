@@ -21,7 +21,7 @@ public class Shooter {
     Launcher launcher;
     Limelight3A ll;
     LLResult result;
-    ShooterMath math;
+    ShooterMathCpp math;
     Odometry odo;
 
     public static double goalPosX = 0;
@@ -31,7 +31,7 @@ public class Shooter {
 
     public Shooter(HardwareMap hardwareMap){
 
-        math = new ShooterMath();
+        math = new ShooterMathCpp();
         pitch = new Pitch(hardwareMap);
         turret = new Turret(hardwareMap);
         launcher = new Launcher(hardwareMap);
@@ -43,24 +43,17 @@ public class Shooter {
     }
 
 
-    void aimWithCamera(){
-
-        math.updateDistance(result.getTy());
-        distance = math.distance;
-
-        math.updateTurretAngle(result.getTx());
-        turretAngle = math.turretAngle;
-
-        math.updatePitchAngle();
-        pitchAngle = math.pitchAngle;
+    void aimWithCamera() {
+        distance = math.updateDistance(result.getTy());
+        turretAngle = math.updateTurretAngle(result.getTx(), distance);
+        pitchAngle = math.updatePitchAngle(distance);
 
         pitch.setPosition(math.angleToServoPos(pitchAngle));
         turret.setPosition(math.angleToTicks(turretAngle));
-
     }
 
-    void aimWithOdometry(){
 
+    void aimWithOdometry() {
         double dx = goalPosX - robotX;
         double dy = goalPosY - robotY;
 
@@ -68,19 +61,18 @@ public class Shooter {
         double absoluteAngleToGoal = Math.atan2(dy, dx);
         double relativeTurretAngle = math.wrapRadians(absoluteAngleToGoal - robotH);
 
-        math.distance = distance;
-        math.updatePitchAngle();
-        pitchAngle = math.pitchAngle;
+        pitchAngle = math.updatePitchAngle(distance);
+
         pitch.setPosition(math.angleToServoPos(pitchAngle));
         turret.setPosition(math.angleToTicks(relativeTurretAngle));
-
-
     }
+
 
 
     public void update(){
 
         result = ll.getLatestResult();
+        math.setSpeed(launcher.mathVelocity);
 
         if(result != null && result.isValid()){
 
