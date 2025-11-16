@@ -1,0 +1,4 @@
+/home/bob/Android/Sdk/cmake/3.22.1/bin/ninja \
+  -C \
+  /home/bob/StudioProjects/swerve-drive/TeamCode/.cxx/Debug/2h2q3uxi/armeabi-v7a \
+  shootermath

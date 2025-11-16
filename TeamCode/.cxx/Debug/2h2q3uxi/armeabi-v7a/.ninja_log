@@ -1,0 +1,6 @@
+# ninja log v5
+0	92	1763134437564414134	CMakeFiles/shootermath.dir/ShooterMath.cpp.o	dd43734c1def440a
+92	114	1763134437587931449	/home/bob/StudioProjects/swerve-drive/TeamCode/build/intermediates/cxx/Debug/2h2q3uxi/obj/armeabi-v7a/libshootermath.so	7d14dfe2eec60029
+0	5	0	clean	bc70b700bbaac99e
+0	175	1763136963195674992	CMakeFiles/shootermath.dir/ShooterMath.cpp.o	dd43734c1def440a
+175	197	1763136963218675286	/home/bob/StudioProjects/swerve-drive/TeamCode/build/intermediates/cxx/Debug/2h2q3uxi/obj/armeabi-v7a/libshootermath.so	7d14dfe2eec60029

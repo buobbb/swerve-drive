@@ -20,9 +20,9 @@ public class Launcher {
     public PIDController pidController;
     public static boolean reverseMotor = false;
 
-    public static double kP = 0.1, kI = 0, kD = 0.0002;
+    public static double kP = 1.5, kI = 0, kD = 0.0002;
     double pidPower;
-    public static double power = 1;
+    public double power = 1;
     public double mathVelocity = 0;
 
     public Launcher(HardwareMap hardwareMap){
@@ -41,6 +41,16 @@ public class Launcher {
 
     }
 
+    public void setPower(double p){
+        double maxSpeed = 25.0;
+        power = Math.min(p / maxSpeed, 1.0);
+        shoot();
+    }
+
+    public void setPowerMuie(double p){
+        power = p;
+        shoot();
+    }
 
     public void shoot(){
         targetVelocity = power;
@@ -55,7 +65,6 @@ public class Launcher {
     public void update(){
 
         currentVelocity = m.getVelocity();
-        mathVelocity = m.getVelocity(AngleUnit.RADIANS);
 
         pidPower = pidController.update(currentVelocity);
         m.setPower(pidPower);

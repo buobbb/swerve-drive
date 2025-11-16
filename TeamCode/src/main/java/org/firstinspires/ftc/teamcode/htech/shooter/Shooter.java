@@ -21,17 +21,18 @@ public class Shooter {
     Launcher launcher;
     Limelight3A ll;
     LLResult result;
-    ShooterMathCpp math;
+    ShooterMath math;
     Odometry odo;
 
     public static double goalPosX = 0;
     public static double goalPosY = 0;
-    double distance, pitchAngle, turretAngle;
+    public static double pitchAngle = 30;
+    double distance;
     double robotX, robotY, robotH;
 
     public Shooter(HardwareMap hardwareMap){
 
-        math = new ShooterMathCpp();
+        math = new ShooterMath();
         pitch = new Pitch(hardwareMap);
         turret = new Turret(hardwareMap);
         launcher = new Launcher(hardwareMap);
@@ -44,35 +45,50 @@ public class Shooter {
 
 
     void aimWithCamera() {
-        distance = math.updateDistance(result.getTy());
-        turretAngle = math.updateTurretAngle(result.getTx(), distance);
-        pitchAngle = math.updatePitchAngle(distance);
+        double distance = math.updateDistance(result.getTy());
+        double turretAngle = math.updateTurretAngle(result.getTx(), distance);
 
-        pitch.setPosition(math.angleToServoPos(pitchAngle));
+
+        double servoPos = math.angleToServoPos(Math.toRadians(pitchAngle));
+        pitch.setPosition(servoPos);
+
+        double requiredSpeed = math.calculateSpeedForDistance(distance);
+        launcher.setPower(requiredSpeed);
+
         turret.setPosition(math.angleToTicks(turretAngle));
     }
+
 
 
     void aimWithOdometry() {
         double dx = goalPosX - robotX;
         double dy = goalPosY - robotY;
 
+
         distance = Math.sqrt(dx * dx + dy * dy);
+
+
         double absoluteAngleToGoal = Math.atan2(dy, dx);
         double relativeTurretAngle = math.wrapRadians(absoluteAngleToGoal - robotH);
 
-        pitchAngle = math.updatePitchAngle(distance);
 
-        pitch.setPosition(math.angleToServoPos(pitchAngle));
+        double servoPos = math.angleToServoPos(ShooterMath.fixedTheta);
+        pitch.setPosition(servoPos);
+
+
+        double requiredSpeed = math.calculateSpeedForDistance(distance);
+        launcher.setPower(requiredSpeed);
+
+
         turret.setPosition(math.angleToTicks(relativeTurretAngle));
     }
+
 
 
 
     public void update(){
 
         result = ll.getLatestResult();
-        math.setSpeed(launcher.mathVelocity);
 
         if(result != null && result.isValid()){
 

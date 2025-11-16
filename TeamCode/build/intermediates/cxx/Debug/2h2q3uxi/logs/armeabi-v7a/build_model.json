@@ -134,6 +134,7 @@
         "rootBuildGradleFolder": "/home/bob/StudioProjects/swerve-drive",
         "sdkFolder": "/home/bob/Android/Sdk",
         "isBuildOnlyTargetAbiEnabled": true,
+        "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
         "isCmakeBuildCohabitationEnabled": false,
         "isPrefabEnabled": false
       },
