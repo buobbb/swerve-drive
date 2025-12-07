@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.utils.Pose;
 
 @Config
@@ -15,14 +16,15 @@ public class SwerveDrivetrain implements Drivetrain {
     public SwerveModule frontLeftModule, backLeftModule, backRightModule, frontRightModule;
     public SwerveModule[] modules;
 
-    public static double TRACK_WIDTH = 9, //distanta dintre front left si front right
-            WHEEL_BASE = 9; //distanta dintre front left si back left
+    public static double TRACK_WIDTH = 9.92126, //distanta dintre front left si front right
+            WHEEL_BASE = 9.783465; //distanta dintre front left si back left
+    //distanta de la roata la centru (diagonala x+y) 6.966842 inch
     private final double R;
-    public static double frontLeftOffset = 2, frontRightOffset = 0, backLeftOffset = 0, backRightOffset = -0.055;
+    public static double frontLeftOffset = 0.745, frontRightOffset = 2.4828, backLeftOffset = 2.54, backRightOffset = 2.37;
     public static boolean maintainHeading = false;
 
     public static double TRANSLATION_SPEED = 1.0;
-    public static double ROTATION_SPEED = 0.75;
+    public static double ROTATION_SPEED = 1.0;
     public static double DEADBAND = 0.05;
 
     double[] ws = new double[4];
@@ -35,10 +37,10 @@ public class SwerveDrivetrain implements Drivetrain {
     private boolean locked = false;
 
     public SwerveDrivetrain() {
-        frontLeftModule  = new SwerveModule(SwerveHardware.frontLeftMotor,  SwerveHardware.frontLeftServo,  new AbsoluteAnalogEncoder(SwerveHardware.frontLeftEncoder,  3.3).zero(frontLeftOffset).setInverted(true));
-        backLeftModule   = new SwerveModule(SwerveHardware.backLeftMotor,   SwerveHardware.backLeftServo,   new AbsoluteAnalogEncoder(SwerveHardware.backLeftEncoder,   3.3).zero(backLeftOffset).setInverted(true));
-        backRightModule  = new SwerveModule(SwerveHardware.backRightMotor,  SwerveHardware.backRightServo,  new AbsoluteAnalogEncoder(SwerveHardware.backRightEncoder,  3.3).zero(backRightOffset).setInverted(true));
-        frontRightModule = new SwerveModule(SwerveHardware.frontRightMotor, SwerveHardware.frontRightServo, new AbsoluteAnalogEncoder(SwerveHardware.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
+        frontLeftModule  = new SwerveModule(SwerveHardwareTest.frontLeftMotor,  SwerveHardwareTest.frontLeftServo,  new AbsoluteAnalogEncoder(SwerveHardwareTest.frontLeftEncoder,  3.3).zero(frontLeftOffset).setInverted(true));
+        backLeftModule   = new SwerveModule(SwerveHardwareTest.backLeftMotor,   SwerveHardwareTest.backLeftServo,   new AbsoluteAnalogEncoder(SwerveHardwareTest.backLeftEncoder,   3.3).zero(backLeftOffset).setInverted(true));
+        backRightModule  = new SwerveModule(SwerveHardwareTest.backRightMotor,  SwerveHardwareTest.backRightServo,  new AbsoluteAnalogEncoder(SwerveHardwareTest.backRightEncoder,  3.3).zero(backRightOffset).setInverted(true));
+        frontRightModule = new SwerveModule(SwerveHardwareTest.frontRightMotor, SwerveHardwareTest.frontRightServo, new AbsoluteAnalogEncoder(SwerveHardwareTest.frontRightEncoder, 3.3).zero(frontRightOffset).setInverted(true));
 
         modules = new SwerveModule[]{frontLeftModule, frontRightModule, backRightModule, backLeftModule};
         for (SwerveModule m : modules) m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -99,7 +101,7 @@ public class SwerveDrivetrain implements Drivetrain {
         read();
         double x = g.left_stick_x;
         double y = -g.left_stick_y;
-        double w = g.right_stick_x * ROTATION_SPEED;
+        double w = -g.right_stick_x * ROTATION_SPEED;
 
         x = deadband(x, DEADBAND);
         y = deadband(y, DEADBAND);

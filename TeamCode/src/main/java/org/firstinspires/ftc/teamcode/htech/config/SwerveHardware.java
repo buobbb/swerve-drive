@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.htech.config;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -46,9 +47,24 @@ public class SwerveHardware {
     public static void init(HardwareMap hardwareMap){
 
         frontLeftMotor = hardwareMap.get(DcMotorEx.class, "m0");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "m1");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "m2");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "m3");
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, "m2e");
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, "m1");
+        backRightMotor = hardwareMap.get(DcMotorEx.class, "m3e");
+
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         vs = hardwareMap.voltageSensor.iterator().next();
         odo = hardwareMap.get(GoBildaPinpointDriver.class, BlobConstants.pinpointName);
@@ -62,20 +78,20 @@ public class SwerveHardware {
         unlock(backLeftMotor);
         unlock(backRightMotor);
 
-        frontLeftServo = hardwareMap.get(CRServo.class, "s0");
-        frontRightServo = hardwareMap.get(CRServo.class, "s1");
-        backLeftServo = hardwareMap.get(CRServo.class, "s2");
-        backRightServo = hardwareMap.get(CRServo.class, "s3");
+        frontLeftServo = hardwareMap.get(CRServo.class, "s4e");
+        frontRightServo = hardwareMap.get(CRServo.class, "s2e");
+        backLeftServo = hardwareMap.get(CRServo.class, "s1e");
+        backRightServo = hardwareMap.get(CRServo.class, "s3e");
 
         frontLeftServo.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftServo.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "e0");
-        frontRightEncoder = hardwareMap.get(AnalogInput.class, "e1");
-        backLeftEncoder = hardwareMap.get(AnalogInput.class, "e2");
-        backRightEncoder = hardwareMap.get(AnalogInput.class, "e3");
+        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "a0");
+        frontRightEncoder = hardwareMap.get(AnalogInput.class, "a2e");
+        backLeftEncoder = hardwareMap.get(AnalogInput.class, "a1");
+        backRightEncoder = hardwareMap.get(AnalogInput.class, "a3e");
 
 
 

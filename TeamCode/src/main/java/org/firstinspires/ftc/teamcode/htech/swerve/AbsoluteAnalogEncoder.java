@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 public class AbsoluteAnalogEncoder {
 
     public static double DEFAULT_RANGE = 3.3;
-    public static boolean VALUE_REJECTION = false;
+    public static boolean VALUE_REJECTION = true;
     private final AnalogInput encoder;
     private double offset, analogRange;
     private boolean inverted;

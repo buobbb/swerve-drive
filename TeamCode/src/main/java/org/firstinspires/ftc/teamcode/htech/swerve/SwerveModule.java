@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.htech.swerve;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
-import static org.firstinspires.ftc.teamcode.htech.config.SwerveHardware.vs;
+import static org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest.vs;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -24,8 +24,8 @@ import java.util.Locale;
 @Config
 public class SwerveModule {
 
-    public static double P = 0.6, I = 0, D = 0.1;
-    public static double K_STATIC = 0.03;
+    public static double P = 0.15, I = 0, D = 0;
+    public static double K_STATIC = 0;
     private double voltage;
 
     private int vCount = 0;
@@ -34,8 +34,8 @@ public class SwerveModule {
 
     public static boolean MOTOR_FLIPPING = true;
 
-    public static double WHEEL_RADIUS = 1.4; // in
-    public static double GEAR_RATIO = 1 / (3.5 * 1.5 * 2); // output (wheel) speed / input (motor) speed
+    public static double WHEEL_RADIUS = 1.064567; // in
+    public static double GEAR_RATIO = 0.2164; // output (wheel) speed / input (motor) speed
     public static final double TICKS_PER_REV = 28;
 
     private DcMotorEx motor;
@@ -55,7 +55,7 @@ public class SwerveModule {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servo = s;
-        ((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000));
+//        ((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000));
 
         encoder = e;
         rotationController = new PIDFController(P, I, D, 0);
@@ -76,30 +76,32 @@ public class SwerveModule {
 
         if (++vCount >= 10) { voltage = vs.getVoltage(); vCount = 0; }
 
-        rotationController.setPIDF(P, I, D, 0);
-        double target = getTargetRotation(), current = getModuleRotation();
 
-        double error = normalizeRadians(target - current);
-        if (MOTOR_FLIPPING && Math.abs(error) > Math.PI / 2) {
-            target = normalizeRadians(target - Math.PI);
-            wheelFlipped = true;
-        } else {
-            wheelFlipped = false;
-        }
+            rotationController.setPIDF(P, I, D, 0);
+            double target = getTargetRotation(), current = getModuleRotation();
 
-        error = normalizeRadians(target - current);
+            double error = normalizeRadians(target - current);
+            if (MOTOR_FLIPPING && Math.abs(error) > Math.PI / 2) {
+                target = normalizeRadians(target - Math.PI);
+                wheelFlipped = true;
+            } else {
+                wheelFlipped = false;
+            }
 
-        double power = Range.clip(rotationController.calculate(0, error), -MAX_SERVO, MAX_SERVO);
-        if (Double.isNaN(power)) power = 0;
-        servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
+            error = normalizeRadians(target - current);
+
+            double power = Range.clip(rotationController.calculate(0, error), -MAX_SERVO, MAX_SERVO);
+            if (Double.isNaN(power)) power = 0;
+            servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
+
     }
 
     public double getTargetRotation() {
-        return normalizeRadians(target - Math.PI);
+        return normalizeRadians(target);
     }
 
     public double getModuleRotation() {
-        return normalizeRadians(position - Math.PI);
+        return normalizeRadians(position);
     }
 
     public void setMotorPower(double power) {
