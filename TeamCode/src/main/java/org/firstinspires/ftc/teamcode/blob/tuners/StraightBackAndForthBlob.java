@@ -6,15 +6,21 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobCoaieMari;
 import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobSwerve;
+import org.firstinspires.ftc.teamcode.blob.driveTrain.LucaSwerve;
+import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
+import org.firstinspires.ftc.teamcode.htech.utils.Pose;
 
 @Config
 @Autonomous
 public class StraightBackAndForthBlob extends LinearOpMode {
 
-    BlobSwerve blob;
+    LucaSwerve lucaSwerve;
+    Odometry localizer;
     SwerveDrivetrain drive;
 
     public static double fx = 39.37, fy = 0, fh = 0;
@@ -33,12 +39,15 @@ public class StraightBackAndForthBlob extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SwerveHardware.init(hardwareMap);
+        SwerveHardwareTest.init(hardwareMap);
         drive = new SwerveDrivetrain();
-        blob = new BlobSwerve(drive);
+        localizer = new Odometry(SwerveHardwareTest.vs, SwerveHardwareTest.odo);
+        lucaSwerve = new LucaSwerve(drive, localizer, new Pose(0,0,0));
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        waitForStart();
+        while(opModeInInit()) {
+            lucaSwerve.init();
+        }
 
         cs = STATES.FORWARD;
         firstTime = true;
@@ -49,10 +58,10 @@ public class StraightBackAndForthBlob extends LinearOpMode {
 
                 case FORWARD:
                     if(firstTime) {
-                        blob.setTargetPosition(fx, fy, Math.toRadians(fh));
+                        lucaSwerve.setTargetPose(new Pose(fx, fy, 0));
                         firstTime = false;
                     }
-                    else if(blob.inPosition()) {
+                    else if(lucaSwerve.inPosition()) {
                         cs = STATES.BACKWARDS;
                         firstTime = true;
                     }
@@ -60,10 +69,10 @@ public class StraightBackAndForthBlob extends LinearOpMode {
 
                 case BACKWARDS:
                     if(firstTime) {
-                        blob.setTargetPosition(bx, by, bh);
+                        lucaSwerve.setTargetPose(new Pose(bx, by, 0));
                         firstTime = false;
                     }
-                    else if(blob.inPosition()) {
+                    else if(lucaSwerve.inPosition()) {
                         cs = STATES.FORWARD;
                         firstTime = true;
                     }
@@ -74,13 +83,12 @@ public class StraightBackAndForthBlob extends LinearOpMode {
 
             }
 
-            telemetry.addData("x", blob.odo.getX());
-            telemetry.addData("y", blob.odo.getY());
-            telemetry.addData("heading", blob.odo.getHeading());
-            telemetry.addData("target Heading", blob.targetHeading);
-            telemetry.addData("real Heading", blob.realHeading);
-
-            blob.update();
+            telemetry.addData("x", lucaSwerve.localizer.getX());
+            telemetry.addData("y", lucaSwerve.localizer.getY());
+            telemetry.addData("heading", lucaSwerve.localizer.getHeading());
+            telemetry.addData("inPos", lucaSwerve.inPosition());
+            telemetry.addData("CS", cs);
+            lucaSwerve.update();
             telemetry.update();
         }
     }

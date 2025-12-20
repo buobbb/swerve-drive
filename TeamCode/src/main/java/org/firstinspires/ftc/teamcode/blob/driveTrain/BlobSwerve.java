@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.blob.math.PIDControllerBlob;
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 import com.pedropathing.geometry.Pose;
 
@@ -44,9 +45,9 @@ public class BlobSwerve {
 
     public BlobSwerve(SwerveDrivetrain drivetrain) {
         this.drive = drivetrain;
-        this.odo   = new Odometry(SwerveHardware.vs, SwerveHardware.odo);
+        this.odo   = new Odometry(SwerveHardwareTest.vs, SwerveHardwareTest.odo);
         setTargetPosition(0,0,0);
-        SwerveHardware.auto = true;
+        SwerveHardwareTest.auto = true;
     }
 
     public void resetPose(double x, double y, double headingRad) {
@@ -100,11 +101,11 @@ public class BlobSwerve {
     public boolean inPosition() { return inPosition(DEAD_XY, DEAD_XY, DEAD_H); }
 
     public boolean inPosition(double tolX, double tolY, double tolH) {
-        double h = odo.getHeading();
-        realHeading = (h < 0) ? Math.abs(h) : 2*Math.PI - h;
-        double th = targetHeading;
-        double e = th - realHeading;
-        if (Math.abs(e) > Math.PI) e = -Math.signum(e) * (2*Math.PI - Math.abs(e));
+        realHeading = odo.getHeading();
+        double e = targetHeading - realHeading;
+        if (Math.abs(e) > Math.PI)
+            e -= Math.signum(e) * 2*Math.PI;
+
         headingError = e;
 
         return Math.abs(targetX - odo.getX()) < tolX &&
@@ -121,20 +122,21 @@ public class BlobSwerve {
         pidY.kp = kP; pidY.ki = kI; pidY.kd = kD;
         pidH.kp = hP; pidH.ki = hI; pidH.kd = hD;
 
-        double h = odo.getHeading();
-        realHeading = (h < 0) ? Math.abs(h) : 2*Math.PI - h;
+        realHeading = odo.getHeading();
         double eH = targetHeading - realHeading;
-        if (Math.abs(eH) > Math.PI) eH = -Math.signum(eH) * (2*Math.PI - Math.abs(eH));
+        if (Math.abs(eH) > Math.PI)
+            eH -= Math.signum(eH) * 2*Math.PI;
+
         headingError = eH;
 
         double vx = pidX.calculate(targetX, odo.predictedX);
         double vy = pidY.calculate(targetY, odo.predictedY);
-        double vw = pidH.calculate(eH, 0);
+        double vw = pidH.calculate(0, eH);
 
         vx *= LATERAL_MULT;
 
-        double rx =  vy * Math.cos(-h) - vx * Math.sin(-h);
-        double ry =  vy * Math.sin(-h) + vx * Math.cos(-h);
+        double rx = vx * Math.cos(realHeading) + vy * Math.sin(realHeading);
+        double ry = -vx * Math.sin(realHeading) + vy * Math.cos(realHeading);
 
         rx = clamp(rx, -MAX_CMD, MAX_CMD);
         ry = clamp(ry, -MAX_CMD, MAX_CMD);

@@ -5,13 +5,13 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class ShooterMath {
 
-    public static double hGoal = 0.985;
-    public static double hTag = 0.75;
+    public static double hGoal = 100;
+    public static double hTag = 74;
     public static double hCam = 0;
     public static double hShooter = 0.338;
     public static double llLateralMountError = 0;
     public static double g = 9.81;
-    public static double llMountAngle = 0;
+    public static double llMountAngle = 75;
 
 
     public static double s_min = 0;
@@ -19,7 +19,7 @@ public class ShooterMath {
     public static double theta_min = Math.toRadians(0);
     public static double theta_max = Math.toRadians(60);
     public static double fixedTheta = Math.toRadians(30);
-    public static double ticks_per_turret_rev = 0;
+    public static double ticks_per_turret_rev = 3440;
     public static double ticks_zero = 0;
     public static int dir = 1;
 
@@ -49,7 +49,7 @@ public class ShooterMath {
     }
 
     public int angleToTicks(double radians) {
-        return (int) (ticks_zero + dir * (radians / (2 * Math.PI)) * ticks_per_turret_rev);
+        return (int) ((ticks_zero + dir * (radians / (2 * Math.PI)) * ticks_per_turret_rev)) / 10;
     }
 
     public double wrapRadians(double angle) {

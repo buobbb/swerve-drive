@@ -11,7 +11,8 @@ public class Pitch {
 
     Servo s;
 
-    public static double initPos = 0.5;
+    public static double initPos = 0.48;
+    public double currentPos = 0;
 
     public Pitch(HardwareMap hardwareMap){
 
@@ -22,6 +23,7 @@ public class Pitch {
 
     public void setPosition(double pos){
         s.setPosition(pos);
+        currentPos = pos;
     }
 
 }

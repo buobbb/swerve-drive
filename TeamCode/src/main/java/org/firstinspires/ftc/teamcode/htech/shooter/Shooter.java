@@ -10,25 +10,34 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.blob.localization.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
+import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.config.mechanisms_hardware.Sensors;
+import org.firstinspires.ftc.teamcode.htech.swerve.MathUtils;
 
 
 @Config
 public class Shooter {
 
-    Pitch pitch;
-    Turret turret;
-    Launcher launcher;
-    Limelight3A ll;
-    LLResult result;
-    ShooterMath math;
-    Odometry odo;
+    public Pitch pitch;
+    public Turret turret;
+    public Launcher launcher;
+    public ShooterMath math;
+    public Odometry odo;
 
-    public static double goalPosX = 0;
-    public static double goalPosY = 0;
+    public static double maxTurret = 90;
+
+    public static double goalPosX = -118;
+    public static double goalPosY = 20.5;
     public static double pitchAngle = 30;
-    double distance;
-    double robotX, robotY, robotH;
+
+    public static double hoodClosePos = 0.5;
+    public static double hoodFarPos = 1;
+
+    public static double thresholdHood = 58.5;
+
+    public double distance;
+    public double robotX, robotY, robotH;
+    public double turretAngle;
 
     public Shooter(HardwareMap hardwareMap){
 
@@ -36,79 +45,44 @@ public class Shooter {
         pitch = new Pitch(hardwareMap);
         turret = new Turret(hardwareMap);
         launcher = new Launcher(hardwareMap);
-        ll = hardwareMap.get(Limelight3A.class, Sensors.limelight);
-        odo = new Odometry(SwerveHardware.vs, SwerveHardware.odo);
+        odo = new Odometry(SwerveHardwareTest.vs, SwerveHardwareTest.odo);
 
 
-        ll.start();
     }
 
-
-    void aimWithCamera() {
-        double distance = math.updateDistance(result.getTy());
-        double turretAngle = math.updateTurretAngle(result.getTx(), distance);
-
-
-        double servoPos = math.angleToServoPos(Math.toRadians(pitchAngle));
-        pitch.setPosition(servoPos);
-
-        double requiredSpeed = math.calculateSpeedForDistance(distance);
-        launcher.setPower(requiredSpeed);
-
-        turret.setPosition(math.angleToTicks(turretAngle));
+    public static double normalizeAngle(double angle){
+        while(angle > Math.PI) angle -= 2 * Math.PI;
+        while(angle < -Math.PI) angle += 2 * Math.PI;
+        return angle;
     }
 
-
-
-    void aimWithOdometry() {
-        double dx = goalPosX - robotX;
-        double dy = goalPosY - robotY;
-
-
-        distance = Math.sqrt(dx * dx + dy * dy);
-
-
-        double absoluteAngleToGoal = Math.atan2(dy, dx);
-        double relativeTurretAngle = math.wrapRadians(absoluteAngleToGoal - robotH);
-
-
-        double servoPos = math.angleToServoPos(ShooterMath.fixedTheta);
-        pitch.setPosition(servoPos);
-
-
-        double requiredSpeed = math.calculateSpeedForDistance(distance);
-        launcher.setPower(requiredSpeed);
-
-
-        turret.setPosition(math.angleToTicks(relativeTurretAngle));
-    }
-
-
-
+    int i = 1;
 
     public void update(){
 
-        result = ll.getLatestResult();
+        odo.update();
 
-        if(result != null && result.isValid()){
+        robotX = odo.getX();
+        robotY = odo.getY();
+        robotH = normalizeAngle(odo.getHeading());
 
-            aimWithCamera();
+        double x = goalPosX - robotX;
+        double y = goalPosY - robotY;
 
-        }
-        else{
+        distance = Math.hypot(x, y);
 
-            robotX = odo.getX();
-            robotY = odo.getY();
-            robotH = odo.getHeading();
-
-            aimWithOdometry();
+        turretAngle = Math.atan(y / x) - robotH;
+        turretAngle = normalizeAngle(turretAngle);
+        turretAngle = MathUtils.clamp(turretAngle, Math.toRadians(-maxTurret), Math.toRadians(maxTurret));
+        turret.setPosition(math.angleToTicks(turretAngle));
 
 
-        }
+
+
 
         turret.update();
         launcher.update();
-        odo.update();
+
 
     }
 

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.htech.swerve;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -8,7 +10,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
 @Config
-@TeleOp(name = "Swerve Encoder Calib", group = "Swerve")
+@TeleOp
 public class TestEncoder extends LinearOpMode {
 
     private AbsoluteAnalogEncoder flEnc;
@@ -29,6 +31,7 @@ public class TestEncoder extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         frontLeftEncoder = hardwareMap.get(AnalogInput.class, port);
 
         // ATENȚIE: aici pui .setInverted(true/false) EXACT cum vrei să fie în codul final

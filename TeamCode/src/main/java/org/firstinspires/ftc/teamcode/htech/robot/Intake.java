@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.htech.config.mechanisms_hardware.Motors;
 public class Intake {
 
     DcMotorEx m;
-    public static boolean reverseMotor = false;
+    public static boolean reverseMotor = true;
 
     public Intake(HardwareMap hardwareMap){
 
@@ -32,6 +32,10 @@ public class Intake {
 
     public void scuipa(){
         m.setPower(-1);
+    }
+
+    public void setPower(double power){
+        m.setPower(power);
     }
 
 }

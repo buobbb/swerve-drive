@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
 import org.firstinspires.ftc.teamcode.blob.driveTrain.Blob;
 import org.firstinspires.ftc.teamcode.blob.math.LowPassFilter;
+import org.firstinspires.ftc.teamcode.htech.utils.Pose;
 
 @Config
 public class Odometry {
@@ -27,6 +28,13 @@ public class Odometry {
         this.vs = vs;
     }
 
+    public void setPoseEstimate(double x, double y, double heading){
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
+        odo.setHeading(heading, AngleUnit.RADIANS);
+    }
+
     public void calibrate(){
         odo.recalibrateIMU();
     }
@@ -41,6 +49,14 @@ public class Odometry {
 
     public double getY(){
         return y;
+    }
+
+    public Pose getPos(){
+        return new Pose(x, y, heading);
+    }
+
+    public double getVoltage(){
+        return voltage;
     }
 
     public void reset(){

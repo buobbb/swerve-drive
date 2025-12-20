@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.htech.config.mechanisms_hardware.Motors;
+import org.firstinspires.ftc.teamcode.htech.utils.MotionProfile;
 
 import htech.utils.PIDController;
 
@@ -18,8 +19,8 @@ public class Turret {
     public PIDController pidController;
     public static boolean reverseMotor = false;
 
-    public static double kP = 0.01, kI = 0.0, kD = 0.00002;
-    int pidPower;
+    public static double kP = 0.07, kI = 0.0, kD = 0, kF = 0.005;
+    double pidPower;
 
     public Turret(HardwareMap hardwareMap){
         m = hardwareMap.get(DcMotorEx.class, Motors.turretMotor);
@@ -45,9 +46,10 @@ public class Turret {
 
     public void update(){
 
+
         currentPosition = m.getCurrentPosition();
 
-        pidPower = (int) pidController.update(currentPosition);
+        pidPower = pidController.update(currentPosition, kF);
         m.setPower(pidPower);
 
         if(pidController.p != kP) pidController.p = kP;
