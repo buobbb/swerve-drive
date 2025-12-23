@@ -30,7 +30,9 @@ public class TurretPidTx {
 
 
     PIDControllerBlob pidController;
-    public static int targetPosClose = -2, targetPosFar = 1;
+    public static int targetPosClose = 2, targetPosFar = 1;
+
+    public double error;
 
     public static double kP = 0.033, kI = 0, kD = 0.0015;
 
@@ -87,7 +89,7 @@ public class TurretPidTx {
 
             if(result.isValid() && result != null){
 
-                double error = far ? Math.toRadians(targetPosFar - result.getTx()) : Math.toRadians(targetPosClose - result.getTx());
+                error = far ? Math.toRadians(targetPosFar - result.getTx()) : Math.toRadians(targetPosClose - result.getTx());
                 error = math.angleToTicks(error);
                 double power = pidController.calculate(0, error);
                 if(error<=ALLOWED_HEADING_ERROR)
@@ -96,7 +98,7 @@ public class TurretPidTx {
 
             }
             else{
-                double power = pidController.calculate(0, motor.getCurrentPosition());
+                double power = pidController.calculate(motor.getCurrentPosition(), motor.getCurrentPosition());
                 motor.setPower(power);
             }
 

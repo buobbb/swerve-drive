@@ -26,7 +26,7 @@ public class SwerveDrivetrain implements Drivetrain {
     public static boolean maintainHeading = false;
 
     public static double TRANSLATION_SPEED = 1.0;
-    public double ROTATION_SPEED;
+    public static double ROTATION_MAX_SPEED = 0.8;
     public static double DEADBAND = 0.05;
 
     public static double RotMinSpeed = 0.5;
@@ -38,7 +38,7 @@ public class SwerveDrivetrain implements Drivetrain {
     public final double minPow = 0.1;
     public static double imuOffset = 0.0;
 
-    public static double LINEAR_ACCEL_LIMIT = 8.0;
+    public static double LINEAR_ACCEL_LIMIT = 9.0;
     public static double ANGULAR_ACCEL_LIMIT = 6.0;
 
     public SlewRateLimiter fwLimiter, strLimiter, headingLimiter;
@@ -128,7 +128,7 @@ public class SwerveDrivetrain implements Drivetrain {
 
         x *= TRANSLATION_SPEED;
         y *= TRANSLATION_SPEED;
-        w *= TRANSLATION_SPEED;
+        w *= ROTATION_MAX_SPEED;
 
         double fieldX = x* Math.cos(-robotHeading) - y * Math.sin(-robotHeading);
         double fieldY = x * Math.sin(-robotHeading) + y * Math.cos(-robotHeading);
@@ -158,7 +158,7 @@ public class SwerveDrivetrain implements Drivetrain {
 
         x *= TRANSLATION_SPEED;
         y *= TRANSLATION_SPEED;
-        w *= TRANSLATION_SPEED;
+        w *= ROTATION_MAX_SPEED;
 
         x = fwLimiter.calculate(x);
         y = strLimiter.calculate(y);

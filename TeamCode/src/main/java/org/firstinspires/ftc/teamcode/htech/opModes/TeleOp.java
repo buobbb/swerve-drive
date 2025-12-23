@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.robot.RobotSystems;
+import org.firstinspires.ftc.teamcode.htech.shooter.Launcher;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 
 @Config
@@ -47,7 +48,9 @@ public class TeleOp extends LinearOpMode {
             r.update();
 
             // Telemetry
-            telemetry.addData("Target Heading", Math.toDegrees(targetHeading));
+            telemetry.addData("curr vel", r.launcher.currentVelocity);
+            telemetry.addData("target vel", Launcher.targetVelocityClose);
+            telemetry.addData("turret error", r.turret.error);
             telemetry.update();
             drivetrain.updateMovement(gamepad1);
 //            drivetrain.updateMovementFieldCentric(gamepad1);
@@ -77,10 +80,21 @@ public class TeleOp extends LinearOpMode {
             r.launcher.stop();
         }
 
+        if(g1.a){
+            if(lock_robot_heading){
+                lock_robot_heading = false;
+                drivetrain.setLocked(false);
+            }
+            else{
+                lock_robot_heading = true;
+                drivetrain.setLocked(true);
+            }
+        }
+
         if (r.s_CS == RobotSystems.ShooterStates.IDLE) {
             r.intake.setPower(gamepad1.right_trigger > 0.1 ? 1 : gamepad1.left_trigger > 0.1 ? -1 : 0);
 //            r.intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-            r.launcher.setPower(gamepad1.right_trigger > 0.1 ? -0.3 : 0);
+            r.launcher.setPower(gamepad1.right_trigger > 0.1 ? -0.356 : 0);
         }
 
         if (r.rumbling) {

@@ -18,7 +18,7 @@ import java.util.Locale;
 @Config
 public class SwerveModuleKooky {
 
-    public static double P = 0.189, I = 0, D = 0.001;
+    public static double P = 0.2, I = 0, D = 0.001;
     public static double K_STATIC = 0;
     private double voltage;
 
@@ -29,7 +29,7 @@ public class SwerveModuleKooky {
     public static boolean MOTOR_FLIPPING = true;
 
     public static double WHEEL_RADIUS = 1.064567; // in
-    public static double GEAR_RATIO = 0.2164; // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = 0.14467592; // output (wheel) speed / input (motor) speed
     public static final double TICKS_PER_REV = 28;
 
     private DcMotorEx motor;
@@ -46,7 +46,7 @@ public class SwerveModuleKooky {
         MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(MAX_MOTOR);
         motor.setMotorType(motorConfigurationType);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         servo = s;

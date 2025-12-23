@@ -109,7 +109,6 @@ public class Launcher {
         }
 
         currentVelocity = left.getVelocity();
-        currentVelocityRight = right.getVelocity();
 
         if(pidOn) {
             pidPower = pidController.update(currentVelocity);
