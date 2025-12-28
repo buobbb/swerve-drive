@@ -38,13 +38,16 @@ public class TurretOdometryTracker {
         targetY = y;
     }
 
+    public boolean trackGoal = false;
+
     public void update() {
         if (autoUpdateOdometry) {
             odometry.update();
         }
 
         double turretAngle = getTurretAngle(targetX, targetY);
-        turret.setPosition(shooterMath.angleToTicks(turretAngle));
+        if(trackGoal) turret.setPosition(shooterMath.angleToTicks(turretAngle));
+        else turret.setPosition(0);
         turret.update();
     }
 
@@ -59,7 +62,7 @@ public class TurretOdometryTracker {
         double dx = x - odometry.getX();
         double dy = y - odometry.getY();
 
-        double targetHeading = Math.atan2(dy, dx);
+        double targetHeading = Math.atan2(dy, dx) - Math.PI;
         double robotHeading = wrap(odometry.getHeading());
         double turretAngle = wrap(targetHeading - robotHeading);
 

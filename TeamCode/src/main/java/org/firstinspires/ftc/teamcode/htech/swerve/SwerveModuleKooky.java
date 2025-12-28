@@ -18,8 +18,8 @@ import java.util.Locale;
 @Config
 public class SwerveModuleKooky {
 
-    public static double P = 0.2, I = 0, D = 0.001;
-    public static double K_STATIC = 0;
+    public static double P = 0.24, I = 0, D = 0.004, F=0;
+    public static double K_STATIC = 0.03;
     private double voltage;
 
     private int vCount = 0;
@@ -31,7 +31,7 @@ public class SwerveModuleKooky {
     public static double WHEEL_RADIUS = 1.064567; // in
     public static double GEAR_RATIO = 0.14467592; // output (wheel) speed / input (motor) speed
     public static final double TICKS_PER_REV = 28;
-
+    public static double POD_ROTATION_OFFSET = 0;
     private DcMotorEx motor;
     private CRServo servo;
     private AbsoluteAnalogEncoder encoder;
@@ -53,7 +53,7 @@ public class SwerveModuleKooky {
 //        ((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000));
 
         encoder = e;
-        rotationController = new PIDFController(P, I, D, 0);
+        rotationController = new PIDFController(P, I, D, F);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -85,6 +85,7 @@ public class SwerveModuleKooky {
             }
 
             error = normalizeRadians(target - current);
+            error += Math.signum(error)*POD_ROTATION_OFFSET;
 
             double power = Range.clip(rotationController.calculate(0, error), -MAX_SERVO, MAX_SERVO);
             if (Double.isNaN(power)) power = 0;

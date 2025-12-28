@@ -15,15 +15,18 @@ import htech.utils.PIDController;
 @Config
 public class Turret {
 
-    DcMotorEx m;
+    public DcMotorEx m;
+    public DcMotorEx encoder;
 
     public VoltageSensor voltageSensor;
+
+    public static String encoderPort = "m1";
 
     public int targetPosition = 0, currentPosition = 0;
     public PIDController pidController;
     public static boolean reverseMotor = false;
 
-    public static double kP = 0.07, kI = 0.0, kD = 0, kF = 0.005;
+    public static double kP = 0.0513, kI = 0.0, kD = 0.0001, kF = 0.006;
     double pidPower;
 
     public static boolean voltageCompensation = false;
@@ -31,6 +34,11 @@ public class Turret {
 
     public Turret(HardwareMap hardwareMap){
         m = hardwareMap.get(DcMotorEx.class, Motors.turretMotor);
+        encoder = hardwareMap.get(DcMotorEx.class, encoderPort);
+
+        encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        encoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        encoder.setDirection(reverseMotor ? DcMotorEx.Direction.REVERSE : DcMotorEx.Direction.FORWARD);
 
         m.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         m.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -50,6 +58,13 @@ public class Turret {
         this.voltageSensor = voltageSensor;
     }
 
+    public void resetEncoder(){
+        encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        encoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        m.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        m.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void setPosition(int position){
         targetPosition = position;
         pidController.targetValue = targetPosition;
@@ -58,7 +73,7 @@ public class Turret {
     public void update(){
 
 
-        currentPosition = m.getCurrentPosition();
+        currentPosition = encoder.getCurrentPosition();
 
         pidPower = pidController.update(currentPosition, kF);
         m.setPower(pidPower);

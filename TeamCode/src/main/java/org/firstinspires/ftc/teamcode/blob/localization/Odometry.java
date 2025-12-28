@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
+import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.teamcode.blob.constants.BlobConstants;
 import org.firstinspires.ftc.teamcode.blob.driveTrain.Blob;
 import org.firstinspires.ftc.teamcode.blob.math.LowPassFilter;
@@ -53,6 +54,10 @@ public class Odometry {
 
     public Pose getPos(){
         return new Pose(x, y, heading);
+    }
+
+    public Pose getPosGlide(){
+        return new Pose(xGlide, yGlide, heading);
     }
 
     public double getVoltage(){

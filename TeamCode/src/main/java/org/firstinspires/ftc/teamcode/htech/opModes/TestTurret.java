@@ -16,6 +16,9 @@ public class TestTurret extends LinearOpMode {
 
     DcMotorEx m;
     ShooterMath math;
+    DcMotorEx encoder;
+
+    public static String encoderPort = "m1";
     public static boolean reverseMotor = false;
 
     public static double angle = 0;
@@ -23,17 +26,21 @@ public class TestTurret extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         m = hardwareMap.get(DcMotorEx.class, Motors.turretMotor);
+        encoder = hardwareMap.get(DcMotorEx.class, encoderPort);
         math = new ShooterMath();
         m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         m.setDirection(reverseMotor ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+        encoder.setDirection(reverseMotor ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
         telemetry = new MultipleTelemetry(telemetry, com.acmerobotics.dashboard.FtcDashboard.getInstance().getTelemetry());
         waitForStart();
 
         while (opModeIsActive()){
 
-            telemetry.addData("pos", m.getCurrentPosition());
+            telemetry.addData("pos", encoder.getCurrentPosition());
             telemetry.addData("angle to ticks" , math.angleToTicks(angle));
             telemetry.update();
         }

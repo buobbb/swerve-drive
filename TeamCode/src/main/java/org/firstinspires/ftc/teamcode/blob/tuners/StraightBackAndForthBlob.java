@@ -6,11 +6,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobCoaieMari;
-import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobSwerve;
-import org.firstinspires.ftc.teamcode.blob.driveTrain.LucaSwerve;
+import org.firstinspires.ftc.teamcode.blob.driveTrain.BlobDecode;
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
-import org.firstinspires.ftc.teamcode.htech.config.SwerveHardware;
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.htech.utils.Pose;
@@ -19,7 +16,7 @@ import org.firstinspires.ftc.teamcode.htech.utils.Pose;
 @Autonomous
 public class StraightBackAndForthBlob extends LinearOpMode {
 
-    LucaSwerve lucaSwerve;
+    BlobDecode lucaSwerve;
     Odometry localizer;
     SwerveDrivetrain drive;
 
@@ -42,7 +39,7 @@ public class StraightBackAndForthBlob extends LinearOpMode {
         SwerveHardwareTest.init(hardwareMap);
         drive = new SwerveDrivetrain();
         localizer = new Odometry(SwerveHardwareTest.vs, SwerveHardwareTest.odo);
-        lucaSwerve = new LucaSwerve(drive, localizer, new Pose(0,0,0));
+        lucaSwerve = new BlobDecode(drive, localizer, new Pose(0,0,0));
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         while(opModeInInit()) {
@@ -88,6 +85,11 @@ public class StraightBackAndForthBlob extends LinearOpMode {
             telemetry.addData("heading", lucaSwerve.localizer.getHeading());
             telemetry.addData("inPos", lucaSwerve.inPosition());
             telemetry.addData("CS", cs);
+
+            telemetry.addData("powX", lucaSwerve.PowerX);
+            telemetry.addData("powY", lucaSwerve.PowerY);
+            telemetry.addData("powH", lucaSwerve.PowerH);
+
             lucaSwerve.update();
             telemetry.update();
         }

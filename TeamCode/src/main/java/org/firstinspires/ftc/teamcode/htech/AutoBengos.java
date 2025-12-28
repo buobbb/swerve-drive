@@ -68,7 +68,6 @@ public class AutoBengos extends LinearOpMode {
                         drivetrain.updateModules();
                         cs = STATES.SHOOT;
                         firstTime = true;
-                        r.turret.readLl = true;
                         timer.reset();
                     }
                     break;
@@ -81,7 +80,6 @@ public class AutoBengos extends LinearOpMode {
                         }
                         else if(i > 3){
                              r.s_CS = RobotSystems.ShooterStates.IDLE;
-                             r.turret.readLl = false;
                              r.launcher.stop();
                              cs = STATES.DA_TE_LA_O_PARTE;
                              timer.reset();

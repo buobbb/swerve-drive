@@ -19,7 +19,7 @@ public class Launcher {
     DcMotorEx right;
     VoltageSensor vs;
 
-    public static double targetVelocityClose = 1985; public double currentVelocity = 0, currentVelocityRight = 0;
+    public static double targetVelocityClose = 2380; public double currentVelocity = 0, currentVelocityRight = 0;
     public static double targetVelocityFar = 2530;
     public static double targetVelocityAuto = 1790;
     public PIDController pidController, pidControllerRight;
@@ -139,6 +139,6 @@ public class Launcher {
         if(Math.abs(currentVelocity - pidController.targetValue) < errorInVel2) return true;
         else return false;
     }
-    public static int errorInVel1 = 125;
-    public static int errorInVel2 = 150;
+    public static int errorInVel1 = 170;
+    public static int errorInVel2 = 170;
 }

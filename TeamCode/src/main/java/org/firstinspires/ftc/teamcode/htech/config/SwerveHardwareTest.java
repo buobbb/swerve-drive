@@ -88,10 +88,10 @@ public class SwerveHardwareTest {
         frontRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "a0e");
-        frontRightEncoder = hardwareMap.get(AnalogInput.class, "a2e");
-        backLeftEncoder = hardwareMap.get(AnalogInput.class, "a1e");
-        backRightEncoder = hardwareMap.get(AnalogInput.class, "a3e");
+        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "a0");
+        frontRightEncoder = hardwareMap.get(AnalogInput.class, "a2");
+        backLeftEncoder = hardwareMap.get(AnalogInput.class, "a1");
+        backRightEncoder = hardwareMap.get(AnalogInput.class, "a3");
 
 
 

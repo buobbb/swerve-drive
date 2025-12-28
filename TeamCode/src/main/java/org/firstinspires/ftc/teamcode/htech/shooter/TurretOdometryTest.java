@@ -8,18 +8,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.blob.localization.Odometry;
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
+import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 
 @TeleOp(name = "Turret Odometry Tracker Test")
 @Config
 public class TurretOdometryTest extends LinearOpMode {
 
-    public static double targetX = -118;
+
+    public static double targetX = -117;
     public static double targetY = 20.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SwerveHardwareTest.init(hardwareMap);
 
+        SwerveDrivetrain drive = new SwerveDrivetrain();
         Turret turret = new Turret(hardwareMap);
         turret.setVoltageSensor(SwerveHardwareTest.vs);
         Turret.voltageCompensation = true;
@@ -34,6 +37,7 @@ public class TurretOdometryTest extends LinearOpMode {
         while (opModeIsActive()) {
             tracker.setTarget(targetX, targetY);
             tracker.update();
+            drive.updateMovement(gamepad1);
 
             telemetry.addData("Robot X", odometry.getX());
             telemetry.addData("Robot Y", odometry.getY());

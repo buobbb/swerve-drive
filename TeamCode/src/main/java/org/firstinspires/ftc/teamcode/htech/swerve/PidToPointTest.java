@@ -21,6 +21,15 @@ public class PidToPointTest extends LinearOpMode {
     public static double targetY = 0;
     public static double targetH = 0;
 
+    enum STATES{
+        FORWARDS,
+        BACKWARDS,
+        RIGHT,
+        IDLE
+    }
+    STATES CS = STATES.IDLE;
+    boolean firstTime;
+
     private PidToPoint pidToPoint;
     private Odometry odometry;
     private SwerveDrivetrain drivetrain;
@@ -31,6 +40,7 @@ public class PidToPointTest extends LinearOpMode {
         drivetrain = new SwerveDrivetrain();
         odometry = new Odometry(SwerveHardwareTest.vs, SwerveHardwareTest.odo);
         pidToPoint = new PidToPoint(drivetrain, odometry);
+        pidToPoint.setVoltageSensor(SwerveHardwareTest.vs);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -45,7 +55,44 @@ public class PidToPointTest extends LinearOpMode {
 
         waitForStart();
 
+        CS = STATES.FORWARDS;
+        firstTime = true;
+
         while (opModeIsActive()) {
+
+            switch (CS){
+
+                case FORWARDS:
+                    if(firstTime){
+                        pidToPoint.setTargetPose(new Pose(targetX, targetY, targetH));
+                        firstTime = false;
+                    }
+                    else{
+                        if(pidToPoint.inPosition()){
+                            CS = STATES.IDLE;
+                            firstTime = true;
+                        }
+                    }
+                    break;
+
+                case BACKWARDS:
+                    if(firstTime){
+                        pidToPoint.setTargetPose(new Pose(startX, startY, startH));
+                        firstTime = false;
+                    }
+                    else{
+                        if(pidToPoint.inPosition()){
+                            CS = STATES.FORWARDS;
+                            firstTime = true;
+                        }
+                    }
+                    break;
+
+                case IDLE:
+                    break;
+
+            }
+
             pidToPoint.update();
 
             telemetry.addData("x", odometry.getX());
@@ -53,6 +100,7 @@ public class PidToPointTest extends LinearOpMode {
             telemetry.addData("heading", odometry.getHeading());
             telemetry.addData("target", targetX + ", " + targetY + ", " + targetH);
             telemetry.addData("in position", pidToPoint.inPosition());
+            telemetry.addData("rotation power", pidToPoint.robotHeading);
             telemetry.update();
         }
     }

@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.htech.config.SwerveHardwareTest;
@@ -13,12 +14,15 @@ import org.firstinspires.ftc.teamcode.htech.robot.RobotSystems;
 import org.firstinspires.ftc.teamcode.htech.shooter.Launcher;
 import org.firstinspires.ftc.teamcode.htech.swerve.SwerveDrivetrain;
 
+import java.util.List;
+
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AA TeleOp")
 public class TeleOp extends LinearOpMode {
 
     // Higher values (8-10) make the robot snappier; lower values (2-4) make it smoother.
 
+    List<LynxModule> allHubs;
     SwerveDrivetrain drivetrain;
     RobotSystems r;
     htech.utils.StickyGamepad g1;
@@ -34,6 +38,12 @@ public class TeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         SwerveHardwareTest.init(hardwareMap);
         drivetrain = new SwerveDrivetrain();
         r = new RobotSystems(hardwareMap);
@@ -48,11 +58,25 @@ public class TeleOp extends LinearOpMode {
             r.update();
 
             // Telemetry
+            telemetry.addData("s_CS", r.s_CS);
+            telemetry.addData("rt_CS", r.rt_cs);
+            telemetry.addData("Robot X", r.odo.getX());
+            telemetry.addData("Robot Y", r.odo.getY());
+            telemetry.addData("Robot Heading (deg)", Math.toDegrees(r.odo.getHeading()));
+            telemetry.addData("Turret Target Angle (deg)", Math.toDegrees(r.tracker.getTurretAngle(RobotSystems.targetX, RobotSystems.targetY)));
+            telemetry.addData("Turret Target Ticks", r.turret.targetPosition);
+            telemetry.addData("Turret Current Ticks", r.turret.currentPosition);
+            telemetry.addData("Aligned", r.tracker.isAligned());
             telemetry.addData("curr vel", r.launcher.currentVelocity);
             telemetry.addData("target vel", Launcher.targetVelocityClose);
-            telemetry.addData("turret error", r.turret.error);
+            telemetry.addData("distance", r.distance);
             telemetry.update();
             drivetrain.updateMovement(gamepad1);
+
+            for (LynxModule hub : allHubs) {
+                hub.clearBulkCache();
+            }
+
 //            drivetrain.updateMovementFieldCentric(gamepad1);
         }
     }
@@ -61,23 +85,21 @@ public class TeleOp extends LinearOpMode {
         if (g1.b) {
             gamepad1.rumble(150);
             shootFar = !shootFar;
-            r.turret.far = shootFar;
         }
 
         if (g1.left_bumper) {
-            if (r.s_CS == RobotSystems.ShooterStates.IDLE) {
-                r.s_CS = RobotSystems.ShooterStates.CHARGING_UP;
-                if (shootFar) r.launcher.shootFar();
-                else r.launcher.shootClose();
-            } else {
-                r.buttonPressed = true;
-            }
+            r.shoot();
+            if (shootFar) r.launcher.shootFar();
+            else r.launcher.shootClose();
         }
 
         if (g1.right_bumper) {
             r.s_CS = RobotSystems.ShooterStates.IDLE;
-            r.turret.readLl = false;
             r.launcher.stop();
+        }
+
+        if(g1.right_stick_button){
+            r.resetTurret();
         }
 
         if(g1.a){

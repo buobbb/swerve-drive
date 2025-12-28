@@ -22,11 +22,11 @@ public class SwerveDrivetrain implements Drivetrain {
             WHEEL_BASE = 9.783465; //distanta dintre front left si back left
     //distanta de la roata la centru (diagonala x+y) 6.966842 inch
     private final double R;
-    public static double frontLeftOffset = 3.72, frontRightOffset = 5.5, backLeftOffset = 2.45, backRightOffset = 1.4;
+    public static double frontLeftOffset = 3.87079, frontRightOffset = 5.63, backLeftOffset = 2.5184, backRightOffset = 1.5664;
     public static boolean maintainHeading = false;
 
     public static double TRANSLATION_SPEED = 1.0;
-    public static double ROTATION_MAX_SPEED = 0.8;
+    public static double ROTATION_MAX_SPEED = 0.7;
     public static double DEADBAND = 0.05;
 
     public static double RotMinSpeed = 0.5;
@@ -38,8 +38,9 @@ public class SwerveDrivetrain implements Drivetrain {
     public final double minPow = 0.1;
     public static double imuOffset = 0.0;
 
-    public static double LINEAR_ACCEL_LIMIT = 9.0;
+    public static double LINEAR_ACCEL_LIMIT = 10.0;
     public static double ANGULAR_ACCEL_LIMIT = 6.0;
+    public static double coaxOffset = -0.05;
 
     public SlewRateLimiter fwLimiter, strLimiter, headingLimiter;
     private boolean locked = false;
@@ -89,7 +90,7 @@ public class SwerveDrivetrain implements Drivetrain {
             SwerveModuleKooky m = modules[i];
             if (Math.abs(max) > 1) ws[i] /= max;
             m.setMotorPower(Math.abs(ws[i]));
-            m.setTargetRotation(MathUtils.norm(wa[i]));
+            m.setTargetRotation(Math.abs(ws[i])>0 ? MathUtils.norm(wa[i]) + (Math.signum(MathUtils.norm(wa[i]+0.000000001))* coaxOffset): MathUtils.norm(wa[i]));
         }
     }
 
