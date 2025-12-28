@@ -16,29 +16,18 @@ public class PidToPoint {
     public static double TRANSLATIONAL_TOLERANCE = 1.1;
     public static double HEADING_TOLERANCE = Math.toRadians(3);
 
-    public static double X_KP = 0.05;
-    public static double X_KI = 0.0;
-    public static double X_KD = 0;
-    public static double X_KF = 0.0;
-
-    public static double Y_KP = 0.05;
-    public static double Y_KI = 0.0;
-    public static double Y_KD = 0;
-    public static double Y_KF = 0.0;
+    public static double kP = 0.058;
+    public static double kI = 0.0;
+    public static double kD = 0.01;
 
     public static double H_KP = 1;
     public static double H_KI = 0.0;
     public static double H_KD = 0;
-    public static double H_KF = 0.0;
 
     public static double MAX_TRANSLATION = 0.8;
     public static double MAX_ROTATION = 0.8;
-    public static double MIN_TRANSLATION_OUTPUT = 0.02;
-    public static double MIN_HEADING_OUTPUT = 0.01;
-    public static double TRANSLATION_SLOW_RADIUS = 6.0;
     public static double LINEAR_ACCEL_LIMIT = 6.0;
     public static double ANGULAR_ACCEL_LIMIT = 6.0;
-    public static double HEADING_SLOW_RADIUS = Math.toRadians(45.0);
     public static double MIN_RAMP = 0.2;
     public static double NOMINAL_VOLTAGE = 12.0;
 
@@ -50,14 +39,14 @@ public class PidToPoint {
 
     public SlewRateLimiter fwLimiter, strLimiter, headingLimiter;
 
-    private final PIDControllerBlob controllerX = new PIDControllerBlob(X_KP, X_KI, X_KD);
-    private final PIDControllerBlob controllerY = new PIDControllerBlob(Y_KP, Y_KI, Y_KD);
+    private final PIDControllerBlob translationalPID = new PIDControllerBlob(kP, kI, kD);
     private final PIDControllerBlob controllerHeading = new PIDControllerBlob(H_KP, H_KI, H_KD);
-    public static double X_KP_SEC = 0, X_KD_SEC = 0, Y_KP_SEC = 0, Y_KD_SEC = 0;
-    public static double X_SECONDARY_ERROR = 10, Y_SECONDARY_ERROR = 10;
     private Pose targetPose = new Pose();
 
     public static double minPower= 0.1;
+
+    public static double HEADING_OFF_DISTANCE = 16;
+    public static double HEADING_ON_DISTANCE = 4;
 
     public PidToPoint(SwerveDrivetrain drivetrain, Odometry odometry) {
         this.drivetrain = drivetrain;
@@ -87,14 +76,9 @@ public class PidToPoint {
     public void update() {
         odometry.update();
         drivetrain.read();
-        controllerX.kp = X_KP;
-        controllerY.kp = Y_KP;
-
-        controllerX.ki = X_KI;
-        controllerY.ki = Y_KI;
-
-        controllerX.kd = X_KD;
-        controllerY.kd = Y_KD;
+        translationalPID.kp = kP;
+        translationalPID.ki = kI;
+        translationalPID.kd = kD;
 
         controllerHeading.kp = H_KP;
         controllerHeading.ki = H_KI;
@@ -104,16 +88,30 @@ public class PidToPoint {
         Pose deltaPose = targetPose.subtract(robotPose);
         double headingError = AngleUnit.normalizeRadians(deltaPose.heading);
 
-        double xPowerField = controllerX.calculate(0, deltaPose.x);
-        double yPowerField = controllerY.calculate(0, deltaPose.y);
-        double headingPower = controllerHeading.calculate(0, headingError);
-
         double translationalError = Math.hypot(deltaPose.x, deltaPose.y);
         double headingMagnitude = Math.abs(headingError);
+        double dirX = 0;
+        double dirY = 0;
+        if (translationalError > 0) {
+            dirX = deltaPose.x / translationalError;
+            dirY = deltaPose.y / translationalError;
+        }
 
+        double translationSpeed = translationalPID.calculate(0, translationalError);
+        translationSpeed = MathUtils.clamp(translationSpeed, -MAX_TRANSLATION, MAX_TRANSLATION);
+        translationSpeed = fwLimiter.calculate(translationSpeed);
+        double xPowerField = dirX * translationSpeed;
+        double yPowerField = dirY * translationSpeed;
+        double headingPower = 0;
+        if(translationalError < HEADING_OFF_DISTANCE){
+            double headingBlend = MathUtils.clamp((HEADING_OFF_DISTANCE - translationalError)/(HEADING_OFF_DISTANCE - HEADING_ON_DISTANCE), 0, 1);
 
-        double translationRamp = rampScale(translationalError, TRANSLATION_SLOW_RADIUS, TRANSLATIONAL_TOLERANCE);
-        double headingRamp = rampScale(headingMagnitude, HEADING_SLOW_RADIUS, HEADING_TOLERANCE);
+            headingBlend *= headingBlend;
+            headingPower = headingBlend*controllerHeading.calculate(0, headingError);
+        }
+
+//        double translationRamp = rampScale(translationalError, TRANSLATION_SLOW_RADIUS, TRANSLATIONAL_TOLERANCE);
+//        double headingRamp = rampScale(headingMagnitude, HEADING_SLOW_RADIUS, HEADING_TOLERANCE);
 
         double cosH = cos(robotPose.heading);
         double sinH = sin(robotPose.heading);
@@ -129,8 +127,6 @@ public class PidToPoint {
                 Math.min(-y_rotated, MAX_TRANSLATION);
         robotHeading = MathUtils.clamp(headingPower, -MAX_ROTATION, MAX_ROTATION);
         double voltageScale = getVoltageScale();
-        robotForward = fwLimiter.calculate(robotForward);
-        robotLeft = strLimiter.calculate(robotLeft);
         robotHeading = headingLimiter.calculate(robotHeading);
 
         if(robotForward < minPower && robotForward > 0) robotForward = 0;

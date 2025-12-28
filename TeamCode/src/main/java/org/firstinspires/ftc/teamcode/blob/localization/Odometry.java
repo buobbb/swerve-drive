@@ -33,7 +33,8 @@ public class Odometry {
         this.x = x;
         this.y = y;
         this.heading = heading;
-        odo.setHeading(heading, AngleUnit.RADIANS);
+        odo.setPosition(new Pose2D(DistanceUnit.INCH, x, y, AngleUnit.RADIANS, heading));
+
     }
 
     public void calibrate(){
